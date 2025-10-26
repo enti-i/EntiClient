@@ -25,7 +25,7 @@ public static class ThemeManager
             return;
         }
 
-        if (ActiveTheme == theme && ThemeAlreadyApplied(app))
+        if (ActiveTheme == theme && ThemeAlreadyApplied(app, theme))
         {
             if (persist)
             {
@@ -112,13 +112,13 @@ public static class ThemeManager
         }
     }
 
-    private static bool ThemeAlreadyApplied(Application app)
+    private static bool ThemeAlreadyApplied(Application app, AppTheme theme)
     {
         var dictionaries = app.Resources.MergedDictionaries;
         return dictionaries.Any(d =>
         {
             var source = d.Source?.OriginalString ?? string.Empty;
-            return ActiveTheme switch
+            return theme switch
             {
                 AppTheme.Light => source.EndsWith("LightTheme.xaml", StringComparison.OrdinalIgnoreCase),
                 _ => source.EndsWith("DarkTheme.xaml", StringComparison.OrdinalIgnoreCase)
