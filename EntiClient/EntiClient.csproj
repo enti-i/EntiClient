@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>EntiClient</AssemblyName>
+    <RootNamespace>EntiClient</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Shared.xaml" />
+    <Page Include="Themes\DarkTheme.xaml" />
+    <Page Include="Themes\LightTheme.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Link="Docs\README.md" />
+    <None Include="..\LICENSE" Link="Docs\LICENSE" />
+  </ItemGroup>
+</Project>
