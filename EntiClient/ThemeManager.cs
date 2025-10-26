@@ -13,6 +13,8 @@ public static class ThemeManager
 
     private static readonly string ThemePreferenceFile = Path.Combine(ThemePreferenceDirectory, "theme.pref");
 
+    public static event EventHandler<ThemeChangedEventArgs>? ThemeChanged;
+
     public static AppTheme ActiveTheme { get; private set; } = AppTheme.Dark;
 
     public static void ApplyTheme(AppTheme theme, bool persist = true)
@@ -20,6 +22,16 @@ public static class ThemeManager
         var app = Application.Current;
         if (app == null)
         {
+            return;
+        }
+
+        if (ActiveTheme == theme && ThemeAlreadyApplied(app))
+        {
+            if (persist)
+            {
+                PersistTheme(theme);
+            }
+
             return;
         }
 
@@ -43,11 +55,18 @@ public static class ThemeManager
         };
 
         dictionaries.Add(new ResourceDictionary { Source = themePath });
+
+        var previousTheme = ActiveTheme;
         ActiveTheme = theme;
 
         if (persist)
         {
             PersistTheme(theme);
+        }
+
+        if (previousTheme != theme)
+        {
+            OnThemeChanged(app, theme);
         }
     }
 
@@ -92,10 +111,39 @@ public static class ThemeManager
             // Ignore persistence failures – the runtime theme already changed.
         }
     }
+
+    private static bool ThemeAlreadyApplied(Application app)
+    {
+        var dictionaries = app.Resources.MergedDictionaries;
+        return dictionaries.Any(d =>
+        {
+            var source = d.Source?.OriginalString ?? string.Empty;
+            return ActiveTheme switch
+            {
+                AppTheme.Light => source.EndsWith("LightTheme.xaml", StringComparison.OrdinalIgnoreCase),
+                _ => source.EndsWith("DarkTheme.xaml", StringComparison.OrdinalIgnoreCase)
+            };
+        });
+    }
+
+    private static void OnThemeChanged(Application app, AppTheme theme)
+    {
+        ThemeChanged?.Invoke(app, new ThemeChangedEventArgs(theme));
+    }
 }
 
 public enum AppTheme
 {
     Dark,
     Light
+}
+
+public sealed class ThemeChangedEventArgs : EventArgs
+{
+    public ThemeChangedEventArgs(AppTheme theme)
+    {
+        Theme = theme;
+    }
+
+    public AppTheme Theme { get; }
 }

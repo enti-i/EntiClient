@@ -12,7 +12,7 @@ using Microsoft.Win32;
 
 namespace EntiClient.ViewModels;
 
-public sealed class MainViewModel : INotifyPropertyChanged
+public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
 {
     private AppTheme _currentTheme = ThemeManager.ActiveTheme;
     private bool _isOffline;
@@ -112,9 +112,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
             {
                 _currentTheme = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ThemeToggleLabel));
             }
         }
     }
+
+    public string ThemeToggleLabel => CurrentTheme == AppTheme.Dark ? "Switch to light theme" : "Switch to dark theme";
 
     public bool IsOffline
     {
@@ -176,6 +179,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
     {
         BrowseSkinCommand = new RelayCommand(BrowseSkin, () => IsOffline);
         ResetSkinCommand = new RelayCommand(ResetSkin, () => IsOffline && HasOfflineSkin);
+        ThemeManager.ThemeChanged += OnThemeChanged;
+    }
+
+    public void Dispose()
+    {
+        ThemeManager.ThemeChanged -= OnThemeChanged;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -224,5 +233,13 @@ public sealed class MainViewModel : INotifyPropertyChanged
         OfflineSkinPreview = null;
         _selectedSkinFileName = null;
         OnPropertyChanged(nameof(SelectedSkinName));
+    }
+
+    private void OnThemeChanged(object? sender, ThemeChangedEventArgs e)
+    {
+        if (_currentTheme != e.Theme)
+        {
+            CurrentTheme = e.Theme;
+        }
     }
 }

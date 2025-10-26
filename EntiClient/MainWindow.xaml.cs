@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using EntiClient.ViewModels;
 
@@ -17,7 +18,17 @@ public partial class MainWindow : Window
             return;
         }
 
-        vm.CurrentTheme = vm.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark;
-        ThemeManager.ApplyTheme(vm.CurrentTheme);
+        var nextTheme = vm.CurrentTheme == AppTheme.Dark ? AppTheme.Light : AppTheme.Dark;
+        ThemeManager.ApplyTheme(nextTheme);
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+
+        if (DataContext is MainViewModel vm)
+        {
+            vm.Dispose();
+        }
     }
 }
