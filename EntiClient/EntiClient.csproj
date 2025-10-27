@@ -9,20 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Page Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Shared.xaml" />
-    <Page Include="Themes\DarkTheme.xaml" />
-    <Page Include="Themes\LightTheme.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md" Link="Docs\README.md" />
     <None Include="..\LICENSE" Link="Docs\LICENSE" />
   </ItemGroup>
