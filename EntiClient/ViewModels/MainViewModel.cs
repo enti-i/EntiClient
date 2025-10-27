@@ -28,21 +28,21 @@ public sealed class MainViewModel : INotifyPropertyChanged, IDisposable
         {
             Name = "PvP Velocity",
             Description = "Optimized for competitive play with low latency tweaks.",
-            Icon = "⚔",
+            Icon = "PVP",
             Accent = "#FF646B"
         },
         new LauncherPreset
         {
             Name = "Survival Realm",
             Description = "Balanced performance and shaders for immersive survival.",
-            Icon = "🌲",
+            Icon = "SRV",
             Accent = "#6BCB77"
         },
         new LauncherPreset
         {
             Name = "Modded Frontier",
             Description = "Forge 1.20 modpack with auto-updating profile management.",
-            Icon = "🧪",
+            Icon = "MOD",
             Accent = "#9B6BFF"
         }
     };

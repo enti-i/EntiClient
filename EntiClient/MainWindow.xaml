@@ -451,14 +451,17 @@
                                                                     </Style.Triggers>
                                                                 </Style>
                                                             </StackPanel.Style>
-                                                            <TextBlock Text="🧍" FontSize="28" HorizontalAlignment="Center" />
+                                                            <Grid HorizontalAlignment="Center">
+                                                                <Ellipse Width="32" Height="32" Fill="#33FFFFFF" StrokeThickness="1" Stroke="#66FFFFFF" />
+                                                                <Rectangle Width="18" Height="20" Fill="#26FFFFFF" RadiusX="6" RadiusY="6" VerticalAlignment="Bottom" Margin="0,0,0,2" />
+                                                            </Grid>
                                                             <TextBlock Text="No skin" Foreground="{DynamicResource SecondaryTextBrush}" FontSize="12" HorizontalAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
                                                 <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
                                                     <TextBlock Text="{Binding SelectedSkinName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock Text="PNG recommended • 64x64" Foreground="{DynamicResource SecondaryTextBrush}" />
+                                                    <TextBlock Text="PNG recommended - 64x64" Foreground="{DynamicResource SecondaryTextBrush}" />
                                                 </StackPanel>
                                             </Grid>
                                         </Border>

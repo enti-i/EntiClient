@@ -104,11 +104,11 @@ public static class ThemeManager
         }
         catch (IOException)
         {
-            // Ignore persistence failures – the runtime theme already changed.
+            // Ignore persistence failures - the runtime theme already changed.
         }
         catch (UnauthorizedAccessException)
         {
-            // Ignore persistence failures – the runtime theme already changed.
+            // Ignore persistence failures - the runtime theme already changed.
         }
     }
 
