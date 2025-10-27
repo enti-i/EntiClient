@@ -51,6 +51,46 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <Style x:Key="OutlinedTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{StaticResource PrimaryTextBrush}" />
+            <Setter Property="Background" Value="#13FFFFFF" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderBrush" Value="#3CFFFFFF" />
+            <Setter Property="BorderThickness" Value="1.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ScrollViewer x:Name="PART_ContentHost" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="StatusPill" TargetType="Border">
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="Padding" Value="12,6" />
+            <Setter Property="Background" Value="#1EFFFFFF" />
+            <Setter Property="BorderBrush" Value="#28FFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -303,27 +343,106 @@
 
                         <Border Style="{StaticResource GlassCard}" Padding="26" Margin="0,18,0,0">
                             <StackPanel>
-                                <TextBlock Text="Offline mode" FontSize="20" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding OfflineHeadline}" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,4,0,12" TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding OfflineDescription}" TextWrapping="Wrap" Margin="0,0,0,16" />
-                                <TextBlock Text="{Binding LastSync, StringFormat=Last synced {0}}" FontWeight="SemiBold" />
-                                <ItemsControl ItemsSource="{Binding OfflineCapabilities}" Margin="0,16,0,0">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Style="{StaticResource InfoPill}">
-                                                <TextBlock Text="{Binding}" />
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <DockPanel>
+                                    <StackPanel DockPanel.Dock="Left">
+                                        <TextBlock Text="Offline mode" FontSize="20" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding OfflineHeadline}" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <Border Style="{StaticResource StatusPill}" DockPanel.Dock="Right" Margin="12,0,0,0">
+                                        <TextBlock Text="{Binding OfflineProfileSummary}" FontWeight="SemiBold" />
+                                    </Border>
+                                </DockPanel>
+
+                                <TextBlock Text="{Binding OfflineDescription}" TextWrapping="Wrap" Margin="0,12,0,20" />
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="220" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <Ellipse Width="14" Height="14" Fill="{StaticResource AccentBrush}" VerticalAlignment="Center" />
+                                            <TextBlock Text="Persona setup" FontWeight="SemiBold" Margin="6,0,0,0" />
+                                        </StackPanel>
+                                        <TextBlock Text="Offline name" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,0,0,6" />
+                                        <TextBox Text="{Binding OfflineUsername, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource OutlinedTextBox}" IsEnabled="{Binding IsOffline}" />
+                                        <TextBlock Text="{Binding OfflineSkinStatus}" Foreground="{StaticResource SecondaryTextBrush}" Margin="0,10,0,10" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Choose skin"
+                                                    Command="{Binding BrowseSkinCommand}"
+                                                    Style="{StaticResource AccentButton}"
+                                                    Width="140"
+                                                    IsEnabled="{Binding IsOffline}" />
+                                            <Button Content="Reset"
+                                                    Command="{Binding ClearSkinCommand}"
+                                                    Style="{StaticResource SecondaryButton}"
+                                                    Width="100"
+                                                    IsEnabled="{Binding IsOffline}" Margin="10,0,0,0" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <Border Grid.Column="1"
+                                            Background="#0FFFFFFF"
+                                            BorderBrush="#2CFFFFFF"
+                                            BorderThickness="1.2"
+                                            CornerRadius="16"
+                                            Padding="12"
+                                            Margin="20,0,0,0">
+                                        <Grid>
+                                            <Rectangle RadiusX="14" RadiusY="14" Fill="#142A3F70" />
+                                            <Image Source="{Binding OfflineSkinPreview}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" Height="180">
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding OfflineSkinPreview}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <StackPanel.Style>
+                                                    <Style TargetType="StackPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding OfflineSkinPreview}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Style>
+                                                <TextBlock Text="No custom skin" FontWeight="SemiBold" Margin="0,0,0,4" />
+                                                <TextBlock Text="Upload a PNG skin to personalize offline play." TextWrapping="Wrap" Width="160" TextAlignment="Center" Foreground="{StaticResource SecondaryTextBrush}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+
+                                <StackPanel Margin="0,24,0,0">
+                                    <TextBlock Text="{Binding LastSync, StringFormat=Last synced {0}}" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding OfflineCapabilities}" Margin="0,12,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Style="{StaticResource InfoPill}">
+                                                    <TextBlock Text="{Binding}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
                                 <Button Content="Sync when online"
                                         Style="{StaticResource SecondaryButton}"
-                                        Margin="0,20,0,0"
+                                        Margin="0,24,0,0"
                                         IsEnabled="{Binding CanCheckUpdates}"
                                         ToolTipService.ShowOnDisabled="True">
                                     <Button.ToolTip>
