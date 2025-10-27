@@ -304,7 +304,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
-                                                <TextBlock Text="Version {Binding Version}" Foreground="{DynamicResource SecondaryTextBrush}" />
+                                                <TextBlock Text="{Binding Version, StringFormat='Version {0}'}" Foreground="{DynamicResource SecondaryTextBrush}" />
                                             </StackPanel>
                                             <Button Grid.Column="1"
                                                     Content="{Binding Status}"
